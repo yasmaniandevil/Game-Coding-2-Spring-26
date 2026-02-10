@@ -6,11 +6,13 @@ public class ObjectToPickup : MonoBehaviour
 {
     public GameObject bulletPrefab;
 
-    public Transform bulletSpawnPos;
+    //public Transform bulletSpawnPos;
 
     public float bulletVelocity = 30f;
 
     public float bulletPrefabLifeTime = 3f;
+
+    private Vector3 bulletSpawnPosition;
 
  
     // Start is called before the first frame update
@@ -32,10 +34,12 @@ public class ObjectToPickup : MonoBehaviour
     void Fire()
     {
         //spawn bullet
-        GameObject bullet = Instantiate(bulletPrefab, bulletSpawnPos.position, Quaternion.identity);
+        Vector3 direction = transform.up;
+        bulletSpawnPosition = transform.position + transform.up * 0.5f ;
+        GameObject bullet = Instantiate(bulletPrefab, bulletSpawnPosition, Quaternion.identity);
         //shoot bullet
-        bullet.GetComponent<Rigidbody>().AddForce(bulletSpawnPos.forward.normalized *
-                                                  bulletVelocity, ForceMode.Impulse);
+        bullet.GetComponent<Rigidbody>().AddForce(direction * bulletVelocity, ForceMode.Impulse);
+                                                  
         //destroy bullet after sometime
         Destroy(bullet, bulletPrefabLifeTime);
     }

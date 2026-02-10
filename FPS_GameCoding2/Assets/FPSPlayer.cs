@@ -36,9 +36,8 @@ public class FPSPlayer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //grab rigidbody off of played
         rb = GetComponent<Rigidbody>();
-        
-        rb.freezeRotation = true;
         
         //optional lock cursor
         Cursor.lockState = CursorLockMode.Locked;
@@ -52,10 +51,12 @@ public class FPSPlayer : MonoBehaviour
         CheckGround();
     }
 
+    //fixed update is not every frame like Update, instead it runs at scheduled consistent intervals
+    //this is better for when we are doing phsyics
     private void FixedUpdate()
     {
         float currentSpeed;
-        
+        //if running is true or false update the speed either to walk or run speed
         if (isRunning)
         {
             currentSpeed = runSpeed;
@@ -65,50 +66,69 @@ public class FPSPlayer : MonoBehaviour
             currentSpeed = walkSpeed;
         }
 
+        //once current speed gets updated it sends it here
+        //movement math
         Vector3 move = transform.forward * moveInput.y * currentSpeed + 
             transform.right * moveInput.x * currentSpeed;
         
+        //applying our move vector above to change our rigidbodies velocity
+        //keep velocity the same on the y
         rb.linearVelocity = new Vector3(move.x, rb.linearVelocity.y, move.z);
 
+        //if jump ready is true (depending on our input)
+        //and the player is grounded
         if (jumpReady && isGrounded)
         {
+            //turn jump ready to false so we only jump once, it gets back updated to true in OnJump Function
             jumpReady = false;
+            //add force to our rigidbody
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
     }
 
-    public void Move(InputAction.CallbackContext context)
+    //reads the value of our mouse as a vector2 (x,y) stores it into our moveinput var
+    public void OnMove(InputAction.CallbackContext context)
     {
         moveInput = context.ReadValue<Vector2>();
     }
 
     void CameraLook()
     {
+        //if we do not have a camera assigned, exit the function here (do not do the rest of it)
         if (cameraTransform == null) return;
-
-        // Mouse delta scaled by sensitivity and frame time
+        
+        //take the input of our mouse on the x and y, multiples it by how fast we want our camera to move, multiply by framerate
         float mouseX = lookInput.x * lookSensitivity * Time.deltaTime;
         float mouseY = lookInput.y * lookSensitivity * Time.deltaTime;
 
         // Horizontal rotation rotates the player body
+        //yaw means left to right
         yaw += mouseX;
         transform.rotation = Quaternion.Euler(0f, yaw, 0f);
 
         // Vertical rotation rotates the camera only
+        //pitch means up to down
         pitch -= mouseY;
         pitch = Mathf.Clamp(pitch, -90f, 90f); // Prevent flipping
 
         cameraTransform.localRotation = Quaternion.Euler(pitch, 0f, 0f);
     }
-
+    
     public void OnLook(InputAction.CallbackContext context)
     {
         lookInput = context.ReadValue<Vector2>();
     }
 
+    //if we press the jump button (space bar)
+    //then we want to set kump readu to true
     public void OnJump(InputAction.CallbackContext context)
     {
         if(context.performed) jumpReady = true;
+    }
+
+    public void OnSprint(InputAction.CallbackContext context)
+    {
+        isRunning = context.ReadValueAsButton();
     }
 
     private void CheckGround()
