@@ -68,7 +68,7 @@ public class FPSPlayer : MonoBehaviour
         Vector3 move = transform.forward * moveInput.y * currentSpeed + 
             transform.right * moveInput.x * currentSpeed;
         
-        rb.velocity = new Vector3(move.x, rb.velocity.y, move.z);
+        rb.linearVelocity = new Vector3(move.x, rb.linearVelocity.y, move.z);
 
         if (jumpReady && isGrounded)
         {
