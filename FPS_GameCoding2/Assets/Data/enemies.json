@@ -1,0 +1,28 @@
+{
+  "enemiesList": [
+    {
+      "name": "Grunt",
+      "health": 3,
+      "speed": 3.5,
+      "detectionRange": 10,
+      "attackRange": 1.5,
+      "attackCoolDown": 2
+    },
+    {
+      "name": "Powerful",
+      "health": 10,
+      "speed": 2,
+      "detectionRange": 5,
+      "attackRange": 1,
+      "attackCoolDown": 10
+    },
+    {
+      "name": "Fast",
+      "health": 2,
+      "speed": 5,
+      "detectionRange": 20,
+      "attackRange": 0.5,
+      "attackCoolDown": 7
+    }
+  ]
+}

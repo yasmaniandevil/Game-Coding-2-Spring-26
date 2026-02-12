@@ -45,7 +45,7 @@ public class PickupManager : MonoBehaviour
         if(currentPickupIndex != -1)
         {
             //ensure when switching weapons the previous one is turned off
-            pickupList[currentPickupIndex].SetActive(true);
+            pickupList[currentPickupIndex].SetActive(false);
         }
 
         //set the new pickup as active and update the current index
