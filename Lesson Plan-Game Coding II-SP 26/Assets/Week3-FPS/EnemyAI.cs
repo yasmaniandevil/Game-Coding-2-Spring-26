@@ -9,7 +9,7 @@ public class EnemyAI : MonoBehaviour
     public enum EnemyState{ Idle, Patrol, Chase, Attack}
     private EnemyState currentState;
 
-    public Transform player;
+    private Transform player;
     private NavMeshAgent agent;
     
     //patrol settings
@@ -38,6 +38,8 @@ public class EnemyAI : MonoBehaviour
 
         currentState = EnemyState.Patrol; //start with patrolling
         MoveToNextPatrolPoint();
+        
+        player = GameObject.FindGameObjectWithTag("Player").transform;
 
     }
 
