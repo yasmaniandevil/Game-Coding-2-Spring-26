@@ -6,7 +6,7 @@ using UnityEngine.AI;
 public class EnemyAI : MonoBehaviour
 {
     //define different states and switches between them
-    public enum EnemyState{ Idle, Patrol, Chase, Attack}
+    public enum EnemyState{ Idle, Patrol, Chase, Attack, Death}
     private EnemyState currentState;
 
     private Transform player;
@@ -79,6 +79,8 @@ public class EnemyAI : MonoBehaviour
                 AttackBehavior();
                 if(distanceToPlayer > attackRange) ChangeState(EnemyState.Chase);
                 break;
+            case EnemyState.Death:
+                break;
         }
     }
 
@@ -142,7 +144,7 @@ public class EnemyAI : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Bullet"))
         {
-
+            
             //why couldnt i declare collisioncount locally?
             collisionCount++;
             Debug.Log("collision counts: " + collisionCount);
@@ -150,8 +152,10 @@ public class EnemyAI : MonoBehaviour
 
             if(collisionCount == 3)
             {
+                agent.enabled = false;
+                //ChangeState(EnemyState.);
                 Destroy(gameObject);
-                //FPSGameManager.Instance.Score++;
+                FPSGameManager.Instance.Score++;
             }
         }
     }
