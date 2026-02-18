@@ -1,4 +1,5 @@
 {
+    "version": 1,
     "name": "FPSPlayerControls",
     "maps": [
         {
@@ -54,6 +55,15 @@
                     "name": "Jump",
                     "type": "Button",
                     "id": "adea987e-e891-473d-acca-c12fe26461ab",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Reload",
+                    "type": "Button",
+                    "id": "292bdc75-7f0e-4570-a0c3-0051a7f604c9",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -311,6 +321,17 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "31c2b15f-adfb-472e-9c0b-a9df93d19f55",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Reload",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

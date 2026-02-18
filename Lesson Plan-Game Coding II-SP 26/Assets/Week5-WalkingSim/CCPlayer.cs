@@ -46,9 +46,7 @@ public class CCPlayer : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         
-        /*cc.height = standingHeight;
-        cc.center = new Vector3(0, standingHeight * 0.5f, 0);
-        isCrouching = false;*/
+       
     }
 
     void Start()

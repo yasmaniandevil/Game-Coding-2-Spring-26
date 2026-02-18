@@ -171,7 +171,7 @@ public class EnemyAI : MonoBehaviour
             string json = File.ReadAllText(path);
             //convert json to c# objects
             //stores result
-            EnemyDataBase enemyDB = JsonUtility.FromJson<EnemyDataBase>(json);
+             EnemyDataBase enemyDB = JsonUtility.FromJson<EnemyDataBase>(json);
             
             //find the correct enemy in json
             //loops through all enemies
