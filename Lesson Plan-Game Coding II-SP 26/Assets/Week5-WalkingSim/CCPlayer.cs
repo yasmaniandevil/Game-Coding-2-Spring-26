@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 public class CCPlayer : MonoBehaviour
 {
@@ -32,6 +34,11 @@ public class CCPlayer : MonoBehaviour
     public bool isCrouching;
     private bool isRunning;
     private bool isJumping;
+
+    [Header("Interaction")]
+    private GameObject currentTarget;
+    public Image  reticleImage;
+    [FormerlySerializedAs("isInteracting")] public bool interactPressed;
     
     // Start is called before the first frame update
     void Awake()
@@ -46,12 +53,14 @@ public class CCPlayer : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         
-       
+        //find the reticle
+       reticleImage = GameObject.Find("Reticle").GetComponent<Image>();
+       reticleImage.color = new Color(0, 0, 0, .7f);
     }
 
     void Start()
     {
-        Debug.Log("isCrouching?: " + isCrouching);
+        //Debug.Log("isCrouching?: " + isCrouching);
     }
 
     // Update is called once per frame
@@ -62,6 +71,8 @@ public class CCPlayer : MonoBehaviour
         HandleLook();
         HandleMovement();
         //HandleCrouch();
+        CheckInteract();
+        HandleInteract();
         
     }
 
@@ -89,6 +100,8 @@ public class CCPlayer : MonoBehaviour
     {
         //cc build in grounded check
         bool grounded = cc.isGrounded;
+        Debug.Log("isGrounded: " + grounded);
+        
         
         //if grounded and falling force a small downard velocity
         //this keeps controller snapped to ground
@@ -114,10 +127,15 @@ public class CCPlayer : MonoBehaviour
                        transform.forward * moveInput.y * currentSpeed;
 
         //only allowed if grounded
-        if (isJumping && grounded && !isCrouching)
+        if (isJumping && grounded)
         {
             //this converts a desired jump height into an initial upward velocity
             verticalVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
+        }
+        else
+        {
+            
+            isJumping = false;
         }
 
         //so it only happens once per press
@@ -126,7 +144,6 @@ public class CCPlayer : MonoBehaviour
         //this would result in repeated jumps from one button press
         //Consume = acknowledge the input once, then immediately clear it so it cannot be reused.
         
-        isJumping = false;
         
         //apply gravity every frame
         verticalVelocity += gravity * Time.deltaTime;
@@ -158,6 +175,54 @@ public class CCPlayer : MonoBehaviour
         cc.center = center;
     }
 
+    void CheckInteract()
+    {
+        //reset reticle image to normal color first
+        if(reticleImage != null) reticleImage.color = new Color(0, 0, 0, .7f);
+        //make a ray that goes straight out of the camera(center of screen)
+        //Start at the camera position
+        // Shoot forward from where the camera is looking
+        // Check up to 3 units
+        //If something is in that path → return information about it
+        //players eyesight
+        Ray ray = new Ray(cameraTransform.position, cameraTransform.forward);
+        RaycastHit hit;
+        //asking unity if it hit something within 3 units
+        //hit stores what we hit like the collider
+        bool didHit = Physics.Raycast(ray, out hit, 3);
+        if (!didHit) return;//if we didnt hit anything start here
+        //if we hit something tagged interactable
+        if (hit.collider.CompareTag("Interactable"))
+        {
+            //store the object so we can destroy or do whatever when the player clicks
+            currentTarget = hit.collider.gameObject;
+            if (reticleImage != null)
+            {
+                reticleImage.color = Color.red;
+            }
+        }
+        
+        Debug.DrawRay(cameraTransform.position, cameraTransform.forward * 3, Color.blue);
+    }
+
+    //press mouse
+    //is interact = true
+    //then update runs HandleInteract which destroys what we clicked on
+    //consume means "we handled that click don't reuse it
+    void HandleInteract()
+    {
+        //if the player did not press interact this frame do nothing
+        if (!interactPressed) return;
+        //consume the input so one click only triggers one interactions
+        //this changes next frame
+        interactPressed = false;
+        if(currentTarget == null) return;
+        Destroy(currentTarget);
+        //clear target reference after destroying
+        currentTarget = null;
+        
+    }
+
     //input system calbacks
     public void OnMove(InputAction.CallbackContext context)
     {
@@ -182,5 +247,27 @@ public class CCPlayer : MonoBehaviour
     public void OnCrouch(InputAction.CallbackContext context)
     {
         isCrouching = context.ReadValueAsButton();
+    }
+
+    //think of it like "a click happened this frame" NOT "the player is currently interacting"
+    //it is a one frame signal
+    //this is event style instead of state style
+    //click-> set bool, update-> check bool, reset bool
+    public void OnInteract(InputAction.CallbackContext context)
+    {
+        if (context.performed) interactPressed = true;
+    }
+    
+    //Tiny mental model
+    // interactPressed is a one-time ticket
+    // The if line checks: “Do you have a ticket?”
+    // If yes, you walk in
+    // Then you rip the ticket (interactPressed = false)
+    // You still get to do the action inside the room (destroy)
+    // Next frame, you need a new ticket (another click).
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        Debug.Log("Controller collided with " + hit.gameObject.name);
     }
 }
