@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
@@ -24,6 +25,9 @@ public class CCPlayer : MonoBehaviour
     private GameObject currentTarget;
     public Image reticleImage;
     private bool interactPressed;
+    //this is our event that the other scripts will be listening for
+    public static event Action<NPCData> OnDialogueRequested;
+    private Interactable currentInteractable;
 
     private bool isRunning;
     private bool isJumping;
@@ -120,23 +124,27 @@ public class CCPlayer : MonoBehaviour
         //make a ray that goes straight out of the camera(center of screen)
         //players eyesight
         Ray ray = new Ray(cameraTransform.position, cameraTransform.forward);
-        RaycastHit hit;
+        //RaycastHit hit;
         //asking unity if it hit something within 3 units
         //hit stores what we hit like the collider
-        bool didHit = Physics.Raycast(ray, out hit, 3);
-        if (!didHit) return;//if we didn't hit anything start here
+        //bool didHit = Physics.Raycast(ray, out hit, 3);
+        //if (!didHit) return;//if we didn't hit anything start here
         //if we hit something tagged interactable
-        if (hit.collider.CompareTag("Interactable"))
+        if (Physics.Raycast(ray, out RaycastHit hit, 3f))
         {
-            //store the object so we can destroy or do whatever when the player clicks
-            currentTarget = hit.collider.gameObject;
-            if (reticleImage != null)
+            currentInteractable = hit.collider.GetComponentInParent<Interactable>();
+            if(currentInteractable != null && reticleImage != null)
             {
                 reticleImage.color = Color.red;
+                Debug.DrawRay(cameraTransform.position, cameraTransform.forward * 3, Color.blue);
             }
+            else
+            {
+                Debug.DrawRay(cameraTransform.position, cameraTransform.forward * 3, Color.blue);
+            }
+            
         }
         
-        Debug.DrawRay(cameraTransform.position, cameraTransform.forward * 3, Color.blue);
     }
     
     void HandleInteract()
@@ -146,10 +154,9 @@ public class CCPlayer : MonoBehaviour
         //consume the input so one click only triggers one interactions
         //this changes next frame
         interactPressed = false;
-        if(currentTarget == null) return;
-        Destroy(currentTarget);
-        //clear target reference after destroying
-        currentTarget = null;
+        if(currentInteractable == null) return;
+        currentInteractable.Interact(this);
+        
         
     }
 
@@ -182,5 +189,10 @@ public class CCPlayer : MonoBehaviour
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         Debug.Log("CC Collided with: " + hit.gameObject.name);
+    }
+
+    public void RequestDialogue(NPCData npcData)
+    {
+        OnDialogueRequested?.Invoke(npcData);
     }
 }
