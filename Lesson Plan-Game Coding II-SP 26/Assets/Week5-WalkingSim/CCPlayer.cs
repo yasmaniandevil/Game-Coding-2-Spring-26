@@ -8,6 +8,10 @@ using UnityEngine.UI;
 
 public class CCPlayer : MonoBehaviour
 {
+    //dialogue request event
+    public static event Action<NPCData> OnDialogueRequested;
+    private Interactable currentInteractable;
+    
     [Header("Movement")]
     public float walkSpeed = 5;
     public float runSpeed = 9;
@@ -17,10 +21,6 @@ public class CCPlayer : MonoBehaviour
     [Header("Look")]
     public Transform cameraTransform;
     public float lookSensitivity = 1f;
-
-    public float standingHeight = 2f;
-    public float crouchHeight = 1.2f;
-    public float crouchTransitionSpeed = 12f;
 
     private CharacterController cc;
 
@@ -58,10 +58,7 @@ public class CCPlayer : MonoBehaviour
        reticleImage.color = new Color(0, 0, 0, .7f);
     }
 
-    void Start()
-    {
-        //Debug.Log("isCrouching?: " + isCrouching);
-    }
+    
 
     // Update is called once per frame
     void Update()
@@ -70,7 +67,7 @@ public class CCPlayer : MonoBehaviour
         
         HandleLook();
         HandleMovement();
-        //HandleCrouch();
+        
         CheckInteract();
         HandleInteract();
         
@@ -105,7 +102,7 @@ public class CCPlayer : MonoBehaviour
         
         //if grounded and falling force a small downard velocity
         //this keeps controller snapped to ground
-        if (grounded && verticalVelocity < 0)
+        if (grounded && verticalVelocity <= 0)
         {
             verticalVelocity = -2f; //small stick to the ground
         }
@@ -113,13 +110,13 @@ public class CCPlayer : MonoBehaviour
         //first we set the current speed to the walk speed
         float currentSpeed = walkSpeed;
         //choose speed based on state
-        if (isCrouching)
-        {
-            currentSpeed = crouchSpeed;
-        }
-        else if(isRunning)
+        if (isRunning)
         {
             currentSpeed = runSpeed;
+        }
+        else 
+        {
+            currentSpeed = walkSpeed;
         }
         
         //convert input into world space movement
@@ -153,32 +150,13 @@ public class CCPlayer : MonoBehaviour
         //now we are finally moving it
         cc.Move((move + velocity) * Time.deltaTime);
     }
-
-    private void HandleCrouch()
-    {
-        float targetHeight = standingHeight;
-        if (isCrouching)
-        {
-            targetHeight = crouchHeight;
-        }
-        else
-        {
-            targetHeight = standingHeight;
-        }
-        
-        //smoothly changed cc height
-        cc.height = Mathf.Lerp(cc.height, targetHeight, Time.deltaTime * crouchTransitionSpeed);
-        
-        //keep feet planted while changing height
-        Vector3 center = cc.center;
-        center.y = cc.height * 0.5f;
-        cc.center = center;
-    }
+    
 
     void CheckInteract()
     {
         //reset reticle image to normal color first
         if(reticleImage != null) reticleImage.color = new Color(0, 0, 0, .7f);
+        currentInteractable = null;
         //make a ray that goes straight out of the camera(center of screen)
         //Start at the camera position
         // Shoot forward from where the camera is looking
@@ -190,19 +168,18 @@ public class CCPlayer : MonoBehaviour
         //asking unity if it hit something within 3 units
         //hit stores what we hit like the collider
         bool didHit = Physics.Raycast(ray, out hit, 3);
-        if (!didHit) return;//if we didnt hit anything start here
-        //if we hit something tagged interactable
-        if (hit.collider.CompareTag("Interactable"))
+        if (!didHit) return;
+        //find an interactable on the hit object or its parent
+        currentInteractable = hit.collider.GetComponent<Interactable>();
+        if (currentInteractable != null && reticleImage != null)
         {
-            //store the object so we can destroy or do whatever when the player clicks
-            currentTarget = hit.collider.gameObject;
-            if (reticleImage != null)
-            {
-                reticleImage.color = Color.red;
-            }
+            reticleImage.color = Color.red;
+            Debug.DrawRay(cameraTransform.position, cameraTransform.forward * 3, Color.blue);
+            
         }
         
-        Debug.DrawRay(cameraTransform.position, cameraTransform.forward * 3, Color.blue);
+        
+        
     }
 
     //press mouse
@@ -216,10 +193,10 @@ public class CCPlayer : MonoBehaviour
         //consume the input so one click only triggers one interactions
         //this changes next frame
         interactPressed = false;
-        if(currentTarget == null) return;
-        Destroy(currentTarget);
-        //clear target reference after destroying
-        currentTarget = null;
+        if (currentInteractable != null) return;
+        currentInteractable.Interact(this);
+        
+        
         
     }
 
@@ -244,11 +221,6 @@ public class CCPlayer : MonoBehaviour
         isRunning = context.ReadValueAsButton();
     }
 
-    public void OnCrouch(InputAction.CallbackContext context)
-    {
-        isCrouching = context.ReadValueAsButton();
-    }
-
     //think of it like "a click happened this frame" NOT "the player is currently interacting"
     //it is a one frame signal
     //this is event style instead of state style
@@ -270,4 +242,12 @@ public class CCPlayer : MonoBehaviour
     {
         Debug.Log("Controller collided with " + hit.gameObject.name);
     }
+
+    public void RequestDialogue(NPCData npcData)
+    {
+        OnDialogueRequested?.Invoke(npcData);
+    }
+    
 }
+
+
