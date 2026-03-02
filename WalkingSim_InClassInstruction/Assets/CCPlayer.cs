@@ -49,8 +49,10 @@ public class CCPlayer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (cameraTransform != null) return;
         HandleLook();
         HandleMovement();
+
         CheckInteract();
         HandleInteract();
     }
@@ -75,7 +77,7 @@ public class CCPlayer : MonoBehaviour
     {
         //updating our bool to be true or false if the player is grounded
         bool grounded = cc.isGrounded;
-        Debug.Log("is grounded: " + grounded);
+        //Debug.Log("is grounded: " + grounded);
         
         //this keeps the cc snapped to the ground
         if (grounded && verticalVelocity <= 0)
@@ -121,6 +123,7 @@ public class CCPlayer : MonoBehaviour
     {
         //reset reticle image to normal color first
         if(reticleImage != null) reticleImage.color = new Color(0, 0, 0, .7f);
+        currentInteractable = null;
         //make a ray that goes straight out of the camera(center of screen)
         //players eyesight
         Ray ray = new Ray(cameraTransform.position, cameraTransform.forward);
@@ -133,6 +136,7 @@ public class CCPlayer : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit, 3f))
         {
             currentInteractable = hit.collider.GetComponentInParent<Interactable>();
+            //Debug.Log("Current interactable: " + currentInteractable);
             if(currentInteractable != null && reticleImage != null)
             {
                 reticleImage.color = Color.red;
@@ -156,8 +160,9 @@ public class CCPlayer : MonoBehaviour
         interactPressed = false;
         if(currentInteractable == null) return;
         currentInteractable.Interact(this);
-        
-        
+        Debug.Log("handle interact should be running");
+
+
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -184,11 +189,12 @@ public class CCPlayer : MonoBehaviour
     public void OnInteract(InputAction.CallbackContext context)
     {
         if(context.performed) interactPressed = true;
+        Debug.Log("pressed interact");
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        Debug.Log("CC Collided with: " + hit.gameObject.name);
+        //Debug.Log("CC Collided with: " + hit.gameObject.name);
     }
 
     public void RequestDialogue(NPCData npcData)
