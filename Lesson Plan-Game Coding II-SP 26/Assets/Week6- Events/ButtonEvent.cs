@@ -11,7 +11,12 @@ public class ButtonEvent : MonoBehaviour
     //ui.UpdateScore();
     
     //action = built in delegate
-    //event = prevents outside scripts from evoking it
+    //it stores functions
+    //can be invobed by anyone
+    //can be overwrriten
+    //event is a special delegate
+    //only declaring class can invoke
+    //other classes can only sub and unsub
     //?.invoke() = safe call
     
     //a delegate is a variable that can store a function
@@ -22,6 +27,11 @@ public class ButtonEvent : MonoBehaviour
      meaning we dont need to reference a specific Gameobject 
      you can just += instead of FindObjectOfType<ThisScript>*/
     //there is one shared version across the entire program
+    
+    //think twitter
+    //when you post you dont call each follower directly
+    //twitter notifies everyone who has subscribed
+    //event = notification syste,
     public static event Action onButtonPressed;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

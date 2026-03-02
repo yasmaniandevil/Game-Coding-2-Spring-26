@@ -97,7 +97,7 @@ public class CCPlayer : MonoBehaviour
     {
         //cc build in grounded check
         bool grounded = cc.isGrounded;
-        Debug.Log("isGrounded: " + grounded);
+        //Debug.Log("isGrounded: " + grounded);
         
         
         //if grounded and falling force a small downard velocity
@@ -164,17 +164,28 @@ public class CCPlayer : MonoBehaviour
         //If something is in that path → return information about it
         //players eyesight
         Ray ray = new Ray(cameraTransform.position, cameraTransform.forward);
-        RaycastHit hit;
+        //RaycastHit hit;
         //asking unity if it hit something within 3 units
         //hit stores what we hit like the collider
-        bool didHit = Physics.Raycast(ray, out hit, 3);
-        if (!didHit) return;
+        //bool didHit = Physics.Raycast(ray, out hit, 3);
+        //Debug.Log("hit collider: " + hit.collider.name);
+        //if (!didHit) return;
         //find an interactable on the hit object or its parent
-        currentInteractable = hit.collider.GetComponent<Interactable>();
-        if (currentInteractable != null && reticleImage != null)
+        if (Physics.Raycast(ray, out RaycastHit hit, 3f))
         {
-            reticleImage.color = Color.red;
-            Debug.DrawRay(cameraTransform.position, cameraTransform.forward * 3, Color.blue);
+            currentInteractable = hit.collider.GetComponentInParent<Interactable>();
+            Debug.Log("current interactable: " + currentInteractable);
+            if (currentInteractable != null && reticleImage != null)
+            {
+                reticleImage.color = Color.red;
+                Debug.DrawRay(cameraTransform.position, cameraTransform.forward * 3, Color.blue);
+                
+            }
+            else
+            {
+                Debug.DrawRay(cameraTransform.position, cameraTransform.forward * 3, Color.blue);
+
+            }
             
         }
         
@@ -193,11 +204,8 @@ public class CCPlayer : MonoBehaviour
         //consume the input so one click only triggers one interactions
         //this changes next frame
         interactPressed = false;
-        if (currentInteractable != null) return;
+        if (currentInteractable == null) return;
         currentInteractable.Interact(this);
-        
-        
-        
     }
 
     //input system calbacks
@@ -228,6 +236,7 @@ public class CCPlayer : MonoBehaviour
     public void OnInteract(InputAction.CallbackContext context)
     {
         if (context.performed) interactPressed = true;
+        Debug.Log("interactPressed");
     }
     
     //Tiny mental model
@@ -240,7 +249,7 @@ public class CCPlayer : MonoBehaviour
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        Debug.Log("Controller collided with " + hit.gameObject.name);
+        //Debug.Log("Controller collided with " + hit.gameObject.name);
     }
 
     public void RequestDialogue(NPCData npcData)

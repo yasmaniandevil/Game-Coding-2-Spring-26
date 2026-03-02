@@ -10,7 +10,9 @@ public class NPCInteractable : Interactable
         {
             Debug.Log($"NPC {this.gameObject.name} has no data");
         }
-        
+        //calls our request dialogue
+        //then the player calls invoke
+        //then dialogue manager recieves it
         player.RequestDialogue(data);
     }
 }
