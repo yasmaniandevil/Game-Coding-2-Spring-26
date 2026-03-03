@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8362d5108d6e924a8df55b094802815, type: 3}
   m_Name: OpeningLine
   m_EditorClassIdentifier: Assembly-CSharp::NPCData
-  displayName: 
-  placeHolderOpeningLine: 
+  displayName: BUBA
+  placeHolderOpeningLine: MY FRIEND

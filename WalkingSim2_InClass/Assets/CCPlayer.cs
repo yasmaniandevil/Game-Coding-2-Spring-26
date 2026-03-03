@@ -49,13 +49,12 @@ public class CCPlayer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if (cameraTransform == null) return;
+        if (cameraTransform != null) return;
         HandleLook();
         HandleMovement();
 
-        CheckInteract();
-        HandleInteract();
-        
+        //CheckInteract();
+        //HandleInteract();
     }
 
     private void HandleLook()
@@ -137,7 +136,7 @@ public class CCPlayer : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit, 3f))
         {
             currentInteractable = hit.collider.GetComponentInParent<Interactable>();
-            Debug.Log("Current interactable: " + currentInteractable);
+            //Debug.Log("Current interactable: " + currentInteractable);
             if(currentInteractable != null && reticleImage != null)
             {
                 reticleImage.color = Color.red;
@@ -160,11 +159,9 @@ public class CCPlayer : MonoBehaviour
         //this changes next frame
         interactPressed = false;
         if(currentInteractable == null) return;
-        //Debug.Log("current interactable: " + currentInteractable);
         currentInteractable.Interact(this);
-        //Debug.Log("handle interact should be running");
-    
-        //it is not storing current interactable
+        Debug.Log("handle interact should be running");
+
 
     }
 
@@ -192,7 +189,7 @@ public class CCPlayer : MonoBehaviour
     public void OnInteract(InputAction.CallbackContext context)
     {
         if(context.performed) interactPressed = true;
-        Debug.Log("OnInteract fired. performed=" + context.performed);
+        Debug.Log("pressed interact");
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
