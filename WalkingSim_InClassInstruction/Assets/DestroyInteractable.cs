@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class DestroyInteractable : Interactable
+public class DestroyInteractable : Interactable  
 {
     public override void Interact(CCPlayer ccplayer)
     {

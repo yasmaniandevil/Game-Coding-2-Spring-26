@@ -22,7 +22,6 @@ public class CCPlayer : MonoBehaviour
     private float pitch; //up and down
     
     //interaction variables
-    private GameObject currentTarget;
     public Image reticleImage;
     private bool interactPressed;
     //this is our event that the other scripts will be listening for
@@ -162,9 +161,9 @@ public class CCPlayer : MonoBehaviour
         if(currentInteractable == null) return;
         //Debug.Log("current interactable: " + currentInteractable);
         currentInteractable.Interact(this);
-        //Debug.Log("handle interact should be running");
+        Debug.Log("handle interact should be running");
     
-        //it is not storing current interactable
+        
 
     }
 
