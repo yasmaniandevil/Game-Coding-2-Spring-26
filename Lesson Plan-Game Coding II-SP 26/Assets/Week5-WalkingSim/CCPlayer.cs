@@ -39,6 +39,8 @@ public class CCPlayer : MonoBehaviour
     private GameObject currentTarget;
     public Image  reticleImage;
     [FormerlySerializedAs("isInteracting")] public bool interactPressed;
+
+    public bool controlsLocked;
     
     // Start is called before the first frame update
     void Awake()
@@ -65,11 +67,19 @@ public class CCPlayer : MonoBehaviour
     {
         if (cameraTransform == null) return;
         
-        HandleLook();
-        HandleMovement();
+        //HandleLook();
+        //HandleMovement();
         
-        CheckInteract();
-        HandleInteract();
+        //CheckInteract();
+        //HandleInteract();
+
+        if (!controlsLocked)
+        {
+            HandleLook();
+            HandleMovement();
+            CheckInteract();
+            HandleInteract();
+        }
         
     }
 
@@ -174,7 +184,7 @@ public class CCPlayer : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit, 3f))
         {
             currentInteractable = hit.collider.GetComponentInParent<Interactable>();
-            Debug.Log("current interactable: " + currentInteractable);
+            //Debug.Log("current interactable: " + currentInteractable);
             if (currentInteractable != null && reticleImage != null)
             {
                 reticleImage.color = Color.red;
@@ -236,7 +246,7 @@ public class CCPlayer : MonoBehaviour
     public void OnInteract(InputAction.CallbackContext context)
     {
         if (context.performed) interactPressed = true;
-        Debug.Log("interactPressed");
+        //Debug.Log("interactPressed");
     }
     
     //Tiny mental model
@@ -255,6 +265,26 @@ public class CCPlayer : MonoBehaviour
     public void RequestDialogue(NPCData npcData)
     {
         OnDialogueRequested?.Invoke(npcData);
+    }
+
+    public void SetControlsLocked(bool locked)
+    {
+        controlsLocked = locked;
+        if (locked)
+        {
+            //stop movement instantly
+            moveInput = Vector3.zero;
+            lookInput = Vector3.zero;
+            verticalVelocity = 0;
+            
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
     
 }
