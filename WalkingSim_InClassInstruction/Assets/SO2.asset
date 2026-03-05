@@ -10,15 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c8362d5108d6e924a8df55b094802815, type: 3}
-  m_Name: OpeningLine
+  m_Name: SO2
   m_EditorClassIdentifier: Assembly-CSharp::NPCData
-  displayName: BUBA
+  displayName: 
   lines:
-  - hi
-  - how are u
-  choices:
-  - choiceText: ok
-    nextNode: {fileID: 11400000, guid: f20b69aba36b7be469ef91be13c5c732, type: 2}
-  - choiceText: bad
-    nextNode: {fileID: 11400000, guid: 98b706642ed1823459046963ba944a73, type: 2}
+  - grrat
+  choices: []
   nextNode: {fileID: 0}
