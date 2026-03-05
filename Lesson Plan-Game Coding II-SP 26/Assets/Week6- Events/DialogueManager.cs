@@ -1,4 +1,5 @@
 using System;
+using NUnit.Framework;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -69,6 +70,7 @@ public class DialogueManager : MonoBehaviour
         //if(Keyboard.current != null && Keyboard.current.qKey.wasPressedThisFrame)
     }
 
+    //called when CC player raises the ondialoguerequested flag
     void StartDialogue(NPCData npcData)
     {
         
@@ -96,13 +98,15 @@ public class DialogueManager : MonoBehaviour
     //display the current line based on current node + lineindex
     void ShowLine()
     {
+        //when showing a line we shouldnt be showing choices
         ClearChoices();
+        //if no node end dialogue
         if (currentNode == null)
         {
             EndDialogue();
             return;
         }
-        
+        //update speaker name
         if(displayName != null) displayName.text = currentNode.displayName;
         //if node has no lines treat it like a finished node
         if (currentNode.lines == null || currentNode.lines.Length == 0)
@@ -111,25 +115,36 @@ public class DialogueManager : MonoBehaviour
             return;
         }
 
+        //clamp index so we never go out of bounds
         lineIndex = Mathf.Clamp(lineIndex, 0, currentNode.lines.Length - 1);
+        //show line text
         if(lineText != null) lineText.text = currentNode.lines[lineIndex];
     }
 
+    //ui check: are choice buttons currently on the screen
     bool ChoicesAreShowing()
     {
         return choicesContainer != null && choicesContainer.childCount > 0;
+        
+        //to do a debug we need to store the var first
+        /*bool showing = choicesContainer != null && choicesContainer.childCount > 0;
+        Debug.Log(showing);
+        return showing;*/
     }
+    //advances to the next line if we are past the last line finish node
     void Advance()
     {
+        //if node is finished end dialogue
         if (currentNode == null)
         {
             EndDialogue();
             return;
         }
         
+        //move to next line
         lineIndex++;
         
-        //still reading lines in this node
+        //if we still have lines to read in this node, show the next one
         if (currentNode.lines != null && lineIndex < currentNode.lines.Length)
         {
             if (lineText != null)
@@ -139,12 +154,17 @@ public class DialogueManager : MonoBehaviour
             }
             
         }
-        
+        //otherwise we have reached the end
         FinishNode();
     }
 
+    //called after finishing all lines in a node
     void FinishNode()
     {
+        /*1. if choice exists show choices
+         2. else if next node exists continue auto
+         3. else end dialogue
+         */
         //Debug.Log($"FinishNode on {currentNode.name} | nextNode = {(currentNode.nextNode ? currentNode.nextNode.name : "NULL")} | choices = {(currentNode.choices != null ? currentNode.choices.Length : 0)}");
         //if choices exist, show them
         if (HasChoices(currentNode))
@@ -166,13 +186,15 @@ public class DialogueManager : MonoBehaviour
         EndDialogue();
     }
     
+    //data check: does this node contain choice data?
     bool HasChoices(NPCData node) //checks the data
     {
         //does this dialogue node contain choice data?
         return node != null && node.choices != null && node.choices.Length > 0;
+        //Debug.Log(HasChoices(node));
     }
 
-    //are the buttons currently on the screen?
+    //creates button per choice inside choiceContainer
     void ShowChoices(DialogueChoice[] choices)
     {
         ClearChoices();
@@ -184,13 +206,22 @@ public class DialogueManager : MonoBehaviour
 
         foreach (DialogueChoice choice in choices)
         {
+            //spawn the button as a child of the container
             Button bttn = Instantiate(choiceButtonPrefab, choicesContainer);
             
+            //set visible button text
             TextMeshProUGUI tmp = bttn.GetComponentInChildren<TextMeshProUGUI>();
             if (tmp != null) tmp.text = choice.choiceText;
-
+            
+            //cache next node in a local var 
             NPCData next = choice.nextNode;
 
+            //when button is clicked go to that next node or end if null
+            //lambda
+            //unity buttons have an event
+            //this event stores functions to run when the button is clicked
+            //when you do add listener you are saying when button is clicked, run this function
+            //delays execution doesnt run asap
             bttn.onClick.AddListener(() =>
             {
                 Choose(next);
@@ -198,20 +229,25 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
+    //called when player clicks a choice button
     void Choose(NPCData nextNode)
     {
+        //remove buttons asap so UI feels responsve
         ClearChoices();
+        //if no next node this choice ends the convo
         if (nextNode == null)
         {
             EndDialogue();
             return;
         }
-
+        //otherwise go to the chosen node
         currentNode = nextNode;
         lineIndex = 0;
         ShowLine();
-        Debug.Log($"Choose clicked. nextNode = {(nextNode == null ? "NULL" : nextNode.name)}");
+        //Debug.Log($"Choose clicked. nextNode = {(nextNode == null ? "NULL" : nextNode.name)}");
     }
+    
+    //deletes all spawned choice button children
     void ClearChoices()
     {
         if (choicesContainer == null) return;
@@ -221,6 +257,7 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
+    //end dialogue, hide UI, reset state, unlock player controls
     void EndDialogue()
     {
         if(player != null) player.SetControlsLocked(false);
