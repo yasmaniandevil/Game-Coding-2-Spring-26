@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: ThirdNode
   m_EditorClassIdentifier: Assembly-CSharp::NPCData
   displayName: 
-  lines: []
+  lines:
+  - thats amazing
   choices: []
   nextNode: {fileID: 0}

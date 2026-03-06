@@ -12,7 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6894ac397cb2b400dbca46b8896c9c5d, type: 3}
   m_Name: FirstNode
   m_EditorClassIdentifier: Assembly-CSharp::NPCData
-  displayName: 
-  lines: []
-  choices: []
+  displayName: Jessa
+  lines:
+  - Hi
+  - How are you?
+  choices:
+  - choiceText: I am ok
+    nextNode: {fileID: 11400000, guid: 33dd87031be5d411e8e01226a3295ed7, type: 2}
+  - choiceText: i am not ok
+    nextNode: {fileID: 11400000, guid: 5c55f46ddda8b4d4bb8d6ab90fdb9870, type: 2}
   nextNode: {fileID: 0}
