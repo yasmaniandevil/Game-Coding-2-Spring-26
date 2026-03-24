@@ -30,6 +30,8 @@ public class CCPlayer : MonoBehaviour
 
     private bool isRunning;
     private bool isJumping;
+
+    public bool controlsLocked;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -48,12 +50,17 @@ public class CCPlayer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if (cameraTransform == null) return;
-        HandleLook();
-        HandleMovement();
+        if (cameraTransform == null) return;
+        
 
-        CheckInteract();
-        HandleInteract();
+        if (!controlsLocked)
+        {
+            HandleLook();
+            HandleMovement();
+
+            CheckInteract();
+            HandleInteract();
+        }
         
     }
 
@@ -202,5 +209,25 @@ public class CCPlayer : MonoBehaviour
     public void RequestDialogue(NPCData npcData)
     {
         OnDialogueRequested?.Invoke(npcData);
+    }
+
+    public void SetControlsLocked(bool locked)
+    {
+        controlsLocked = locked;
+        if (locked)
+        {
+            //stop movement instantly
+            moveInput = Vector3.zero;
+            lookInput = Vector3.zero;
+            verticalVelocity = 0;
+            
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
 }
