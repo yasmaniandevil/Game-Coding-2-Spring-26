@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class GrabbaleObject : MonoBehaviour
+public class InteractableObject : MonoBehaviour
 {
     [Header("Highlight Settings")]
     //the color the object glows when the player looks at it

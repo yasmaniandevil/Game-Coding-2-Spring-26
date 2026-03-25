@@ -22,7 +22,7 @@ public class ObjectGrabber : MonoBehaviour
 
     //for later after we do base script
     //track the currently highlighted object so we can unhighlight it
-    GrabbaleObject currentHighlight;
+    InteractableObject currentHighlight;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Update()
@@ -53,7 +53,7 @@ public class ObjectGrabber : MonoBehaviour
         if (Physics.Raycast(ray, out hit, grabRange))
         {
             //check if the hit object has the grabbable marker script
-            GrabbaleObject interactable = hit.collider.GetComponent<GrabbaleObject>();
+            InteractableObject interactable = hit.collider.GetComponent<InteractableObject>();
             if (interactable != null)
             {
                 //get rigidbody so we can move it with physics
@@ -161,7 +161,7 @@ public class ObjectGrabber : MonoBehaviour
 
         if(Physics.Raycast(ray, out hit, grabRange))
         {
-            GrabbaleObject interactable = hit.collider.GetComponent<GrabbaleObject>();
+            InteractableObject interactable = hit.collider.GetComponent<InteractableObject>();
             //Debug.Log("hit interactable");
             if ((interactable != null))
             {
