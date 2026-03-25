@@ -162,21 +162,25 @@ public class ObjectGrabber : MonoBehaviour
         if(Physics.Raycast(ray, out hit, grabRange))
         {
             GrabbaleObject interactable = hit.collider.GetComponent<GrabbaleObject>();
-            Debug.Log("hit interactable");
+            //Debug.Log("hit interactable");
             if ((interactable != null))
             {
+                Debug.Log("current interactable: " +  interactable);
+                Debug.Log("current highlight: " + currentHighlight);
                 //if we now looking at different object unhighlight the old one
                 if(currentHighlight != null && currentHighlight != interactable)
                 {
                     currentHighlight.Unhighlight();
                     Debug.Log("call unhighlight");
 
-                    //highlight the new obj
-                    interactable.Highlight();
-                    Debug.Log("call highlight");
-                    currentHighlight = interactable;
-                    return;
+                   
                 }
+
+                //highlight the new obj
+                interactable.Highlight();
+                Debug.Log("call highlight");
+                currentHighlight = interactable;
+                return;
             }
 
             //raycast hit nothing interactable - clear the highlight
