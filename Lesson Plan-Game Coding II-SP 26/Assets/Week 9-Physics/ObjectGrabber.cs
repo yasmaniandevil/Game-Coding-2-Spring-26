@@ -172,7 +172,6 @@ public class ObjectGrabber : MonoBehaviour
                 {
                     currentHighlight.Unhighlight();
                     Debug.Log("call unhighlight");
-
                    
                 }
 
@@ -181,6 +180,7 @@ public class ObjectGrabber : MonoBehaviour
                 Debug.Log("call highlight");
                 currentHighlight = interactable;
                 return;
+
             }
 
             //raycast hit nothing interactable - clear the highlight
@@ -191,5 +191,6 @@ public class ObjectGrabber : MonoBehaviour
                 currentHighlight = null;
             }
         }
+        
     }
 }
