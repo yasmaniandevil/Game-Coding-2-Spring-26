@@ -9,14 +9,18 @@ public class InteractableObject : MonoBehaviour
     [Range(0f, 1f)]
     public float highlightStrength = .4f;
 
-    Renderer objectRenderer; //the render component on this object
+    public Renderer objectRenderer; //the render component on this object
     Color originalColor; //the color before any highlight was applied
     bool isHighlighted = false; //are we currently highlighted
 
     private void Awake()
     {
-        //cache the renderer so we are not calling the getcomp every frame
-        objectRenderer = GetComponent<Renderer>();
+        if(objectRenderer == null)
+        {
+            //cache the renderer so we are not calling the getcomp every frame
+            objectRenderer = gameObject.GetComponent<Renderer>();
+        }
+        
         if (objectRenderer != null)
         {
             //store the original color so we can restore it after unhighlighting
@@ -36,7 +40,7 @@ public class InteractableObject : MonoBehaviour
     {
         if (isHighlighted || objectRenderer == null)
         {
-            Debug.Log("no object renderer & ishighlighted is true");
+            //Debug.Log("no object renderer & ishighlighted is true");
             return;
         }
         //color.lerp blends btwn the orignal color and highlight color

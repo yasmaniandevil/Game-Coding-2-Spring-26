@@ -18,11 +18,13 @@ public class ObjectGrabber : MonoBehaviour
     public float throwForce = 15f;
 
     Rigidbody heldObject; //the rigidbody we are currently holding
-    bool isHolding = false; //are we currently holding something?
+    public bool isHolding = false; //are we currently holding something?
 
     //for later after we do base script
     //track the currently highlighted object so we can unhighlight it
     InteractableObject currentHighlight;
+
+    
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Update()
@@ -114,12 +116,14 @@ public class ObjectGrabber : MonoBehaviour
         heldObject = null;
         isHolding = false;
 
-        //Debug.Log("Dropped Object");
+        
+
     }
 
     //releases the object and launches it forward using addforce
     void ThrowObject()
     {
+        
         if(heldObject == null) return;
 
         //re-enable physics first
@@ -139,12 +143,28 @@ public class ObjectGrabber : MonoBehaviour
 
     public void OnGrabPerformed(InputAction.CallbackContext context)
     {
-        if (isHolding) DropObject();
-        else TryGrab();
+        if(!context.performed) return;
+        if (isHolding) 
+        {
+            DropObject();
+
+
+        }
+        else
+        {
+            TryGrab();
+            
+        }
+
+        
     }
 
     public void OnThrowPerformed(InputAction.CallbackContext context)
     {
+        if ((!context.performed))
+        {
+            return;
+        }
         if (isHolding) ThrowObject();
     }
 
@@ -165,19 +185,19 @@ public class ObjectGrabber : MonoBehaviour
             //Debug.Log("hit interactable");
             if ((interactable != null))
             {
-                Debug.Log("current interactable: " +  interactable);
-                Debug.Log("current highlight: " + currentHighlight);
+                //Debug.Log("current interactable: " +  interactable);
+                //Debug.Log("current highlight: " + currentHighlight);
                 //if we now looking at different object unhighlight the old one
                 if(currentHighlight != null && currentHighlight != interactable)
                 {
                     currentHighlight.Unhighlight();
-                    Debug.Log("call unhighlight");
+                    //Debug.Log("call unhighlight");
                    
                 }
 
                 //highlight the new obj
                 interactable.Highlight();
-                Debug.Log("call highlight");
+                //Debug.Log("call highlight");
                 currentHighlight = interactable;
                 return;
 
@@ -186,7 +206,7 @@ public class ObjectGrabber : MonoBehaviour
             //raycast hit nothing interactable - clear the highlight
             if(currentHighlight != null)
             {
-                Debug.Log("did not hit interactable");
+                //Debug.Log("did not hit interactable");
                 currentHighlight.Unhighlight();
                 currentHighlight = null;
             }
