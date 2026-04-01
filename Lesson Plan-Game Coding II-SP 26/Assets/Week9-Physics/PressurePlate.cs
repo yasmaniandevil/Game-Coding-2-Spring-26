@@ -52,7 +52,7 @@ public class PressurePlate : MonoBehaviour
     //we check for physics object to get the weight
     private void OnTriggerEnter(Collider other)
     {
-
+        Debug.Log("entered triger");
 
         PhysicsObject physicsObj = other.GetComponent<PhysicsObject>();
         if (physicsObj == null) return;
@@ -63,7 +63,6 @@ public class PressurePlate : MonoBehaviour
         Debug.Log($"{other.gameObject.name} entered plate. total weight: {currentWeight}");
 
         CheckActivation();
-
        
     }
     
@@ -78,7 +77,7 @@ public class PressurePlate : MonoBehaviour
 
         currentWeight -= physObj.puzzleWeight;
         currentWeight = Mathf.Max(0f, currentWeight); // prevent negative weight
-        Debug.Log($"{other.gameObject.name} left plate. Total weight: {currentWeight}");
+        Debug.Log($"{other.gameObject.name}. Total weight: {currentWeight}");
 
         CheckDeactivation();
     }
