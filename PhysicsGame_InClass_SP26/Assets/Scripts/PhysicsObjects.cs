@@ -29,7 +29,7 @@ public class PhysicsObjects : MonoBehaviour
 
     Rigidbody rb;
     PhysicsMaterial physMat;
-    public bool isHeld;
+    public bool isHeld = false;
 
     
     void Awake()
