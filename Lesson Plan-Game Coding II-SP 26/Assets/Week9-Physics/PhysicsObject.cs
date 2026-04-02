@@ -29,7 +29,7 @@ public class PhysicsObject : MonoBehaviour
 
     Rigidbody rb;
     PhysicsMaterial physMat; //created at runtime
-    public    bool isHeld = false;
+    public bool isHeld = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()

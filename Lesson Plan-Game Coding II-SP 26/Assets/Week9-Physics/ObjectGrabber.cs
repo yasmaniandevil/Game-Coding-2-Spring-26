@@ -60,7 +60,12 @@ public class ObjectGrabber : MonoBehaviour
             {
                 //get rigidbody so we can move it with physics
                 heldObject = hit.collider.GetComponent<Rigidbody>();
-
+                
+                //added this later
+                PhysicsObject physObj = heldObject.GetComponent<PhysicsObject>();
+                if (physObj != null) physObj.isHeld = true;
+                
+                
                 if (heldObject != null)
                 {
                     //disable gravity so it floats in front of us while held
@@ -104,7 +109,11 @@ public class ObjectGrabber : MonoBehaviour
     void DropObject()
     {
         if (heldObject == null) return;
-
+        
+        //mark no longer as held
+        PhysicsObject physObj = heldObject.GetComponent<PhysicsObject>();
+        if (physObj != null) physObj.isHeld = false;
+        
         //re-enable gravity and rotation
         heldObject.useGravity = true;
         heldObject.freezeRotation = false;
@@ -125,6 +134,11 @@ public class ObjectGrabber : MonoBehaviour
     {
         
         if(heldObject == null) return;
+        
+        
+        //mark no longer as held
+        PhysicsObject physObj = heldObject.GetComponent<PhysicsObject>();
+        if (physObj != null) physObj.isHeld = false;
 
         //re-enable physics first
         heldObject.useGravity = true;

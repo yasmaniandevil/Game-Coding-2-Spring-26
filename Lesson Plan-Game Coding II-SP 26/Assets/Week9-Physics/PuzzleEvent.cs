@@ -3,24 +3,28 @@ using UnityEngine.Events;
 
 public class PuzzleEvent : MonoBehaviour
 {
+    // This enum defines the DIFFERENT TYPES of puzzle logic we can use
+    //all is every input must be active
+    //any just one input is enough
+    //sequence must be activated in specific order
     public enum LogicMode { ALL, ANY, SEQUENCE }
 
     [Header("Logic Settings")]
-    [Tooltip("ALL = every input must be active. ANY = just one. SEQUENCE = must activate in order.")]
+    //ALL = every input must be active. ANY = just one. SEQUENCE = must activate in order
     public LogicMode logicMode = LogicMode.ALL;
 
-    [Tooltip("How many inputs this puzzle has (e.g. 2 pressure plates = 2 inputs)")]
+    //How many inputs this puzzle has (e.g. 2 pressure plates = 2 inputs
     public int inputCount = 2;
 
     [Header("Events")]
-    [Tooltip("Fired when the puzzle condition is met")]
+    //Fired when the puzzle condition is met
     public UnityEvent OnCompleted;
 
-    [Tooltip("Fired when the puzzle resets (inputs deactivated)")]
+    //Fired when the puzzle resets (inputs deactivated)
     public UnityEvent OnReset;
 
     [Header("Settings")]
-    [Tooltip("If true, once completed the puzzle cannot be reset")]
+    //If true, once completed the puzzle cannot be reset
     public bool lockOnComplete = false;
 
     // ---- Private state ----
@@ -30,6 +34,7 @@ public class PuzzleEvent : MonoBehaviour
 
     void Awake()
     {
+        // Create the array based on how many inputs we want
         inputStates = new bool[inputCount];
     }
 
@@ -43,8 +48,7 @@ public class PuzzleEvent : MonoBehaviour
     //   PressurePlate OnActivated ? PuzzleEvent.Activate
     //   But UnityEvent can't pass an int directly from the Inspector
     //   for dynamic calls. Instead, use a wrapper method per input
-    //   (see ActivateInput0, ActivateInput1 below) or use
-    //   a UnityEvent<int> (more advanced — covered in Week 3).
+    //   (see ActivateInput0, ActivateInput1 below)
     // -------------------------------------------------------
     public void Activate(int inputIndex)
     {
@@ -64,7 +68,7 @@ public class PuzzleEvent : MonoBehaviour
             }
             else
             {
-                // Wrong order — reset sequence
+                // Wrong order reset sequence
                 Debug.Log("Wrong order! Sequence reset.");
                 sequenceProgress = 0;
             }
@@ -137,7 +141,7 @@ public class PuzzleEvent : MonoBehaviour
     void Complete()
     {
         isCompleted = true;
-        if (lockOnComplete) Debug.Log("Puzzle complete — locked!");
+        if (lockOnComplete) Debug.Log("Puzzle complete locked!");
         else Debug.Log("Puzzle complete!");
         OnCompleted?.Invoke();
     }
