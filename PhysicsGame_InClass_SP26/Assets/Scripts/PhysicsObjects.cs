@@ -77,4 +77,11 @@ public class PhysicsObjects : MonoBehaviour
         //on validate runs in the editor whenever an inspector value changes
         if(rb != null) ApplyRigidbodySettings();
     }
+
+    public float GetWeight()
+    {
+        if(puzzleWeight >= 0f) return puzzleWeight;
+
+        return mass;
+    }
 }
