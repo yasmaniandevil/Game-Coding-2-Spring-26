@@ -4,10 +4,7 @@ using System.Collections.Generic;
 
 public class PressurePlate : MonoBehaviour
 {
-    //puzzle settings
-    public PuzzleEvent assignedPuzzle;
-
-    public int puzzleIndex = 0;
+   
     //weight settings
     //how much total weight is needed to activate the plate
     public float weightThreadshold = 5f;

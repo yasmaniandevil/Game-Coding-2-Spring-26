@@ -33,7 +33,7 @@ public class InteractableObject : MonoBehaviour
     {
         if (isHighlighted || objectRenderer == null)
         {
-            Debug.Log("no obj renderer & ishighlighted is true");
+            //Debug.Log("no obj renderer & ishighlighted is true");
             return;
         }
         
