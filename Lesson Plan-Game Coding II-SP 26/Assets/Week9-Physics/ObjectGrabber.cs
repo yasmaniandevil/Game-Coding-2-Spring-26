@@ -117,6 +117,7 @@ public class ObjectGrabber : MonoBehaviour
         //re-enable gravity and rotation
         heldObject.useGravity = true;
         heldObject.freezeRotation = false;
+        //heldObject.AddForce(Vector3.down * 2f, ForceMode.Impulse);
 
         //zero velocity so it doesnt launch away on drop
         heldObject.linearVelocity = Vector3.zero;

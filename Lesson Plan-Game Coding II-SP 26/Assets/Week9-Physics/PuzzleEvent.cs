@@ -144,6 +144,7 @@ public class PuzzleEvent : MonoBehaviour
         if (lockOnComplete) Debug.Log("Puzzle complete locked!");
         else Debug.Log("Puzzle complete!");
         OnCompleted?.Invoke();
+        
     }
 
     // -------------------------------------------------------

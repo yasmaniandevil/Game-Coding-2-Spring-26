@@ -77,4 +77,12 @@ public class PhysicsObject : MonoBehaviour
         // OnValidate runs in the editor whenever an Inspector value changes
         if (rb != null) ApplyRigidbodySettings();
     }
+    
+    public float GetWeight()
+    {
+        if (puzzleWeight >= 0)
+            return puzzleWeight;
+
+        return mass;
+    }
 }

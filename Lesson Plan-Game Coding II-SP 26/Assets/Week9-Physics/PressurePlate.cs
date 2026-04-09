@@ -4,6 +4,10 @@ using System.Collections.Generic;
 
 public class PressurePlate : MonoBehaviour
 {
+    //puzzle settings
+    public PuzzleEvent assignedPuzzle;
+
+    public int puzzleIndex = 0;
     //weight settings
     //how much total weight is needed to activate the plate
     public float weightThreadshold = 5f;
@@ -34,7 +38,7 @@ public class PressurePlate : MonoBehaviour
     Vector3 platePressedPos;
 
     HashSet<PhysicsObject> objectsOnPlate = new HashSet<PhysicsObject>();
-    
+    HashSet<PhysicsObject> countedObjects = new HashSet<PhysicsObject>();
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -54,23 +58,13 @@ public class PressurePlate : MonoBehaviour
     //we check for physics object to get the weight
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("entered triger");
+        //Debug.Log("entered triger");
 
         PhysicsObject physicsObj = other.GetComponent<PhysicsObject>();
         if (physicsObj == null) return;
+        objectsOnPlate.Add(physicsObj); //always register the obj
 
-        if(physicsObj.isHeld) return;
-
-        //first simple version
-        //currentWeight += physicsObj.puzzleWeight;
-        //Debug.Log($"{other.gameObject.name} entered plate. total weight: {currentWeight}");
-        //CheckActivation();
-
-        if (objectsOnPlate.Add((physicsObj)))
-        {
-            currentWeight += physicsObj.puzzleWeight;
-            CheckActivation();
-        }
+      
        
     }
     
@@ -82,43 +76,35 @@ public class PressurePlate : MonoBehaviour
 
         PhysicsObject physObj = other.GetComponent<PhysicsObject>();
         if(physObj == null) return;
-
-        /*currentWeight -= physObj.puzzleWeight;
-        currentWeight = Mathf.Max(0f, currentWeight); // prevent negative weight
-        Debug.Log($"{other.gameObject.name}. Total weight: {currentWeight}");
-
-        CheckDeactivation();*/
         
-        if (objectsOnPlate.Remove(physObj))
+        
+        if (countedObjects.Remove(physObj))
         {
-            currentWeight -= physObj.puzzleWeight;
+            currentWeight -= physObj.GetWeight();
             currentWeight = Mathf.Max(0f, currentWeight);
             CheckDeactivation();
         }
+        
+        objectsOnPlate.Remove(physObj);
     }
     
     private void OnTriggerStay(Collider other)
     {
         PhysicsObject physicsObj = other.GetComponent<PhysicsObject>();
+        //Debug.Log("on trigger stay" + physicsObj.name);
         if (physicsObj == null) return;
 
-        // ignore if still being held
-        if (physicsObj.isHeld) return;
-
-        // prevent adding weight multiple times
-        /*if (currentWeight == 0f) // simple version for now
+        //only add weight if:
+        //not beingheld
+        //not already counted
+        if (!physicsObj.isHeld && countedObjects.Add(physicsObj))
         {
-            currentWeight += physicsObj.puzzleWeight;
-            Debug.Log($"{other.gameObject.name} stayed on plate. total weight: {currentWeight}");
-
-            CheckActivation();
-        }*/
-        
-        if (objectsOnPlate.Add((physicsObj)))
-        {
-            currentWeight += physicsObj.puzzleWeight;
-            CheckActivation();
+            currentWeight += physicsObj.GetWeight();
+            CheckActivation();  
+            Debug.Log("check activation" + physicsObj.name);
         }
+
+        
     }
 
     //called whenever weight changes, activates if threshold met

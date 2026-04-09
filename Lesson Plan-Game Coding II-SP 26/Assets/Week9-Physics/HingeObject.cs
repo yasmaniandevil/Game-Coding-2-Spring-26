@@ -37,6 +37,7 @@ public class HingeObject : MonoBehaviour
     private HingeJoint hinge;
     private bool maxEventFired = false;
     private bool minEventFired = false;
+    bool hasActivated = false;
 
     void Awake()
     {
@@ -52,7 +53,7 @@ public class HingeObject : MonoBehaviour
     void ConfigureHinge()
     {
         // --- Limits ---
-        // JointLimits is a struct — we have to set all fields then assign it back
+        // JointLimits is a struct ï¿½ we have to set all fields then assign it back
         JointLimits limits = hinge.limits;
         limits.min = minAngle;
         limits.max = maxAngle;
@@ -89,7 +90,7 @@ public class HingeObject : MonoBehaviour
             OnReachedMax?.Invoke();
             Debug.Log($"{gameObject.name} hinge reached max angle");
         }
-        else if (!minEventFired && currentAngle <= minAngle + eventThreshold)
+        if (!minEventFired && currentAngle <= minAngle + eventThreshold)
         {
             minEventFired = true;
             maxEventFired = false;
