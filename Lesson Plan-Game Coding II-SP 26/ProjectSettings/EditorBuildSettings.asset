@@ -4,5 +4,15 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Week3-FPS/FPS.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 1
+    path: Assets/Weekgaemamanger/GameManagerScene.unity
+    guid: 2cb8c7dbe182d45eaaae6c71e257a937
+  - enabled: 1
+    path: Assets/Week9-Physics/Physics.unity
+    guid: e533e2e86b1f843c5899d0c23d9b6944
   m_configObjects: {}
+  m_UseUCBPForAssetBundles: 0
